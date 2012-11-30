@@ -2,5 +2,5 @@ Checkout [the demo](http://test.darinki.net/tech-hangout/brunch-and-filesystem-a
 
 To generate from source, see [brunch-source](https://github.com/valera-rozuvan/Tech-Hangout/tree/master/brunch-and-filesystem-api/brunch-source).
 
-The presentation [Brunch and FileSystem API](https://docs.google.com/open?id=0Bw8x33F7mMa6eWtwdGotSnROMUk) can be found on Google Docs.
+The presentation [Brunch and FileSystem API](https://docs.google.com/presentation/d/1qW8D3S9-louUq96HCoWv65WlqnsKfjVNn0OMn48hSXw/edit) can be found on Google Docs.
 
