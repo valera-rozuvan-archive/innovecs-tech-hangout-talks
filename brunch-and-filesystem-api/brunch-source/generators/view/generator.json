@@ -1,0 +1,7 @@
+{
+    "files": [{
+        "from": "view.js.hbs",
+        "to": "app/views/{{name}}_view.js"
+    }],
+    "dependencies": []
+}
