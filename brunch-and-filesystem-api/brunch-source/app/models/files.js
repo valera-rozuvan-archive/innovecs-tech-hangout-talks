@@ -3,12 +3,23 @@ var Model = require('./model');
 module.exports = Model.extend({
     'defaults': {
         'fs': undefined,
-        'errorHandler': undefined
+        'errorHandler': undefined,
+        'isChrome': undefined
     },
 
     'initialize': function () {
         self = this;
         self.attributes.errorHandler = errorHandler;
+
+        if ((/chrom(e|ium)/.test(navigator.userAgent.toLowerCase())) && (typeof window.chrome === 'object')) {
+            self.attributes.isChrome = true;
+        } else {
+            self.attributes.isChrome = false;
+
+            self.attributes.errorHandler({'code': 'NOT_CHROME'});
+
+            return;
+        }
 
         // A web app can request access to a sandboxed file system by
         // calling window.requestFileSystem() function.
@@ -33,6 +44,9 @@ module.exports = Model.extend({
             msg = '';
 
             switch (e.code) {
+                case 'NOT_CHROME':
+                    msg = 'You are not using Google\'s Chrome browser. This demo will not work properly.';
+                    break;
                 case FileError.QUOTA_EXCEEDED_ERR:
                     msg = 'QUOTA_EXCEEDED_ERR';
                     break;
@@ -68,6 +82,12 @@ module.exports = Model.extend({
 
         self = this;
 
+        if (self.attributes.isChrome !== true) {
+            self.attributes.errorHandler({'code': 'NOT_CHROME'});
+
+            return;
+        }
+
         self.attributes.fs.root.getFile(
             fileName,
             {
@@ -90,6 +110,12 @@ module.exports = Model.extend({
         var self;
 
         self = this;
+
+        if (self.attributes.isChrome !== true) {
+            self.attributes.errorHandler({'code': 'NOT_CHROME'});
+
+            return;
+        }
 
         self.attributes.fs.root.getFile(
             fileName,
@@ -120,6 +146,12 @@ module.exports = Model.extend({
         var self;
 
         self = this;
+
+        if (self.attributes.isChrome !== true) {
+            self.attributes.errorHandler({'code': 'NOT_CHROME'});
+
+            return;
+        }
 
         self.attributes.fs.root.getFile(
             fileName,

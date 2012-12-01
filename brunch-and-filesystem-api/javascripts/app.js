@@ -159,12 +159,23 @@ window.require.define({"models/files": function(exports, require, module) {
   module.exports = Model.extend({
       'defaults': {
           'fs': undefined,
-          'errorHandler': undefined
+          'errorHandler': undefined,
+          'isChrome': undefined
       },
 
       'initialize': function () {
           self = this;
           self.attributes.errorHandler = errorHandler;
+
+          if ((/chrom(e|ium)/.test(navigator.userAgent.toLowerCase())) && (typeof window.chrome === 'object')) {
+              self.attributes.isChrome = true;
+          } else {
+              self.attributes.isChrome = false;
+
+              self.attributes.errorHandler({'code': 'NOT_CHROME'});
+
+              return;
+          }
 
           // A web app can request access to a sandboxed file system by
           // calling window.requestFileSystem() function.
@@ -189,6 +200,9 @@ window.require.define({"models/files": function(exports, require, module) {
               msg = '';
 
               switch (e.code) {
+                  case 'NOT_CHROME':
+                      msg = 'You are not using Google\'s Chrome browser. This demo will not work properly.';
+                      break;
                   case FileError.QUOTA_EXCEEDED_ERR:
                       msg = 'QUOTA_EXCEEDED_ERR';
                       break;
@@ -224,6 +238,12 @@ window.require.define({"models/files": function(exports, require, module) {
 
           self = this;
 
+          if (self.attributes.isChrome !== true) {
+              self.attributes.errorHandler({'code': 'NOT_CHROME'});
+
+              return;
+          }
+
           self.attributes.fs.root.getFile(
               fileName,
               {
@@ -246,6 +266,12 @@ window.require.define({"models/files": function(exports, require, module) {
           var self;
 
           self = this;
+
+          if (self.attributes.isChrome !== true) {
+              self.attributes.errorHandler({'code': 'NOT_CHROME'});
+
+              return;
+          }
 
           self.attributes.fs.root.getFile(
               fileName,
@@ -276,6 +302,12 @@ window.require.define({"models/files": function(exports, require, module) {
           var self;
 
           self = this;
+
+          if (self.attributes.isChrome !== true) {
+              self.attributes.errorHandler({'code': 'NOT_CHROME'});
+
+              return;
+          }
 
           self.attributes.fs.root.getFile(
               fileName,
@@ -403,7 +435,7 @@ window.require.define({"views/templates/home": function(exports, require, module
     var foundHelper, self=this;
 
 
-    return "<div id=\"content\">\n    <h1>brunch</h1>\n    <h2>Brunch example: File System API</h2>\n    <ul>\n        <li class=\"goto\" data-goto=\"new_file-view\">Try it out</li>\n        <li class=\"goto\" data-goto=\"get-source\">Get the source</li>\n        <li class=\"goto\" data-goto=\"instructions\">Read the instructions</li>\n        <li class=\"goto\" data-goto=\"links\">Visit places</li>\n    </ul>\n\n    <div id=\"get-source\">\n        <h2>Source</h2>\n        <ul>\n            <li>Get the source from <a href=\"\">GitHub repository</a>.</li>\n        </ul>\n    </div>\n    <div id=\"instructions\">\n        <h2>Instructions</h2>\n        <ul>\n            <li>For now (November 29, 2011), only Chrome supports File System API.</li>\n            <li>If you are testing this locally, make sure you are running chrome with the --allow-file-access-from-files option specified.</li>\n            <li>Check JavaScript Console (Ctrl + Shift + j) for debug information output.</li>\n            <li>Use the first text box to create a new file (input a name, and press \"New file\").</li>\n            <li>Use the second text box to load a file's contents into the textarea (input a file name, and press \"View file\").</li>\n            <li>After loading a file, you can modify it's contents in the textarea, and save it (press \"Save file\").</li>\n        </ul>\n    </div>\n    <div id=\"links\">\n        <h2>Links</h2>\n        <ul>\n            <li>This site has been assembled with <a href=\"http://brunch.io/\">Brunch</a>.</li>\n            <li>Official <a href=\"http://dev.w3.org/2009/dap/file-system/pub/FileSystem/\">File System API</a> reference is a must read.</li>\n            <li>A good tutorial: <a href=\"http://www.html5rocks.com/en/tutorials/file/filesystem/\">Exploring the FileSystem APIs</a>.</li>\n        </ul>\n    </div>\n\n    <h2>Try it out</h2>\n</div>\n";});
+    return "<div id=\"content\">\n    <h1>brunch</h1>\n    <h2>Brunch example: File System API</h2>\n    <ul>\n        <li class=\"goto\" data-goto=\"new_file-view\">Try it out</li>\n        <li class=\"goto\" data-goto=\"get-source\">Get the source</li>\n        <li class=\"goto\" data-goto=\"instructions\">Read the instructions</li>\n        <li class=\"goto\" data-goto=\"links\">Visit places</li>\n    </ul>\n\n    <div id=\"get-source\">\n        <h2>Source</h2>\n        <ul>\n            <li>Get the source from <a href=\"https://github.com/valera-rozuvan/Tech-Hangout/tree/master/brunch-and-filesystem-api/\">GitHub repository</a>.</li>\n        </ul>\n    </div>\n    <div id=\"instructions\">\n        <h2>Instructions</h2>\n        <ul>\n            <li>For now (November 29, 2012), only Chrome supports File System API.</li>\n            <li>If you are testing this locally, make sure you are running chrome with the --allow-file-access-from-files option specified.</li>\n            <li>Check JavaScript Console (Ctrl + Shift + j) for debug information output.</li>\n            <li>Use the first text box to create a new file (input a name, and press \"New file\").</li>\n            <li>Use the second text box to load a file's contents into the textarea (input a file name, and press \"View file\").</li>\n            <li>After loading a file, you can modify it's contents in the textarea, and save it (press \"Save file\").</li>\n        </ul>\n    </div>\n    <div id=\"links\">\n        <h2>Links</h2>\n        <ul>\n            <li>This site has been assembled with <a href=\"http://brunch.io/\">Brunch</a>.</li>\n            <li>Official <a href=\"http://dev.w3.org/2009/dap/file-system/pub/FileSystem/\">File System API</a> reference is a must read.</li>\n            <li>A good tutorial: <a href=\"http://www.html5rocks.com/en/tutorials/file/filesystem/\">Exploring the FileSystem APIs</a>.</li>\n        </ul>\n    </div>\n\n    <h2>Try it out</h2>\n</div>\n";});
 }});
 
 window.require.define({"views/templates/new_file": function(exports, require, module) {
